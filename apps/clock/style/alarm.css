@@ -150,7 +150,7 @@ a.alarm-item > span {
 
 a.alarm-item > .time {
   position: absolute;
-  top: 1.3rem;
+  top: 1.0rem;
   left: 0.2rem;
   font-size: 2.8rem;
   color: #CFE2E5;
@@ -175,8 +175,21 @@ a.alarm-item > .label {
 a.alarm-item > .repeat {
   position: absolute;
   top: 4.2rem;
-  left: 1.2rem;
+  left: 0.2rem;
   text-overflow: ellipsis;
+  color: #CFE2E5;
+}
+
+a.alarm-item.with-repeat > .time {
+  top: 0.3rem;
+}
+
+a.alarm-item.with-repeat > .label {
+  top: 1.65rem;
+}
+
+a.alarm-item.with-repeat > .repeat {
+  top: 3.6rem;
 }
 
 #digital-clock.visible ~ #alarms.count4 li:first-child {
