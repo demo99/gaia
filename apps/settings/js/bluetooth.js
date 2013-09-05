@@ -72,6 +72,8 @@ navigator.mozL10n.ready(function bluetoothSettings() {
     var visibleTimeoutTime = 120000;  // visibility will timeout after 2 minutes
     var myName = '';
 
+    var MAX_DEVICE_NAME_LENGTH = 20;
+
     visibleCheckBox.onchange = function changeDiscoverable() {
       setDiscoverable(this.checked);
     };
@@ -93,6 +95,17 @@ navigator.mozL10n.ready(function bluetoothSettings() {
         var productModel = deviceInfo.result['deviceinfo.product_model'];
 
         nameEntered = nameEntered.replace(/^\s+|\s+$/g, '');
+
+        if (nameEntered.length > MAX_DEVICE_NAME_LENGTH) {
+
+          var wantToRetry = window.confirm(_('bluetooth-name-maxlength-alert',
+                { length: MAX_DEVICE_NAME_LENGTH }));
+
+          if (wantToRetry) {
+            renameBtnClicked();
+          }
+          return;
+        }
 
         if (nameEntered === myName || !bluetooth.enabled || !defaultAdapter) {
           return;
