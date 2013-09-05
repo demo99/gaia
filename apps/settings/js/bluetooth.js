@@ -84,6 +84,22 @@ navigator.mozL10n.ready(function bluetoothSettings() {
       }
 
       var nameEntered = window.prompt(_('change-phone-name'), myName);
+      nameEntered = nameEntered.replace(/^\s+|\s+$/g, '');
+
+      if (nameEntered.length > MAX_DEVICE_NAME_LENGTH) {
+
+        var wantToRetry = window.confirm(_('bluetooth-name-maxlength-alert',
+              { length: MAX_DEVICE_NAME_LENGTH }));
+
+        if (wantToRetry) {
+          renameBtnClicked();
+        }
+        return;
+      }
+
+      if (nameEntered === myName || !bluetooth.enabled || !defaultAdapter) {
+        return;
+      }
 
       // Bug 847459: Default name of the bluetooth device is set by bluetoothd
       // to the value of the Android ro.product.model property upon first
@@ -92,26 +108,10 @@ navigator.mozL10n.ready(function bluetoothSettings() {
       // the deviceinfo.product_model setting.
       var deviceInfo = settings.createLock().get('deviceinfo.product_model');
       deviceInfo.onsuccess = function bt_getProductModel() {
+
         var productModel = deviceInfo.result['deviceinfo.product_model'];
-
-        nameEntered = nameEntered.replace(/^\s+|\s+$/g, '');
-
-        if (nameEntered.length > MAX_DEVICE_NAME_LENGTH) {
-
-          var wantToRetry = window.confirm(_('bluetooth-name-maxlength-alert',
-                { length: MAX_DEVICE_NAME_LENGTH }));
-
-          if (wantToRetry) {
-            renameBtnClicked();
-          }
-          return;
-        }
-
-        if (nameEntered === myName || !bluetooth.enabled || !defaultAdapter) {
-          return;
-        }
-
         var req = defaultAdapter.setName(nameEntered || productModel);
+
         req.onsuccess = function bt_renameSuccess() {
           myName = visibleName.textContent = defaultAdapter.name;
         };
