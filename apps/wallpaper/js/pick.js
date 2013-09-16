@@ -14,6 +14,12 @@ var Wallpaper = {
 
     this.cancelButton = document.getElementById('cancel');
     this.wallpapers = document.getElementById('wallpapers');
+    this.preview = document.getElementById('preview-selected-wallpaper');
+
+    GestureDetector.HOLD_INTERVAL = 300;
+    this.gd = new GestureDetector(this.wallpapers, { holdEvents: true });
+    this.gd.startDetecting();
+
     this.generateWallpaperList();
   },
 
@@ -40,14 +46,37 @@ var Wallpaper = {
 
   startPick: function wallpaper_startPick(request) {
     this.pickActivity = request;
-    this.wallpapers.addEventListener('click', this.pickWallpaper.bind(this));
+
+    this.wallpapers.addEventListener('tap', this.pickWallpaper.bind(this));
+    this.wallpapers.addEventListener('holdstart', this.showPreview.bind(this));
+    this.wallpapers.addEventListener('holdend', this.hidePreview.bind(this));
     this.cancelButton.addEventListener('click', this.cancelPick.bind(this));
+  },
+
+  showPreview: function(e) {
+    var src = this.getImageSrc(e);
+    var img = this.preview.querySelector('img');
+
+    if (src != '') {
+      img.src = src;
+      this.preview.classList.remove('hide');
+    }
+  },
+
+  hidePreview: function() {
+    this.preview.classList.add('hide');
+  },
+
+  getImageSrc: function(e) {
+    var backgroundImage = e.target.style.backgroundImage;
+    var src = backgroundImage.match(/url\([\"']?([^\s\"']*)[\"']?\)/)[1];
+    return src;
   },
 
   pickWallpaper: function wallpaper_pickWallpaper(e) {
     // Identify the wallpaper
-    var backgroundImage = e.target.style.backgroundImage;
-    var src = backgroundImage.match(/url\([\"']?([^\s\"']*)[\"']?\)/)[1];
+    var src = this.getImageSrc(e);
+
     // Ignore clicks that are not on one of the images
     if (src == '')
       return;
@@ -83,8 +112,11 @@ var Wallpaper = {
 
   endPick: function wallpaper_endPick() {
     this.pickActivity = null;
+    this.gd.stopDetecting();
     this.cancelButton.removeEventListener('click', this.cancelPick);
-    this.wallpapers.removeEventListener('click', this.pickWallpaper);
+    this.wallpapers.removeEventListener('tap', this.pickWallpaper);
+    this.wallpapers.removeEventListener('holdstart', this.showPreview);
+    this.wallpapers.removeEventListener('holdend', this.hidePreview);
   }
 };
 

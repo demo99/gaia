@@ -1,15 +1,24 @@
 requireApp('wallpaper/js/pick.js');
+require('/shared/js/gesture_detector.js');
+requireApp('system/test/unit/mock_gesture_detector.js');
 
 suite('wallpaper/pick', function() {
+
   var fakeWallpapersContainer;
+  var realGestureDetector;
 
   setup(function() {
+    realGestureDetector = GestureDetector;
+    GestureDetector = MockGestureDetector;
+
     fakeWallpapersContainer = document.createElement('div');
     fakeWallpapersContainer.id = 'wallpapers';
     document.body.appendChild(fakeWallpapersContainer);
   });
 
   teardown(function() {
+    GestureDetector = realGestureDetector;
+
     fakeWallpapersContainer.parentNode.removeChild(fakeWallpapersContainer);
   });
 
