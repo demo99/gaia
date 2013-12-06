@@ -6,6 +6,7 @@ requireApp('system/test/unit/mock_simslot_manager.js');
 requireApp('system/shared/test/unit/mocks/mock_navigator_moz_mobile_connections.js');
 requireApp('system/shared/test/unit/mocks/mock_navigator_moz_icc_manager.js');
 requireApp('system/shared/test/unit/mocks/mock_mobile_operator.js');
+requireApp('system/shared/test/unit/mocks/mock_navigator_moz_settings.js');
 requireApp('system/test/unit/mock_navigator_moz_telephony.js');
 requireApp('system/shared/test/unit/mocks/mock_settings_listener.js');
 requireApp('system/js/lockscreen_connection_info_manager.js');
@@ -30,9 +31,8 @@ suite('system/LockScreenConnInfoManager >', function() {
   var realIccManager;
   var realMozTelephony;
   var realSettingsListener;
+  var realMozSettings;
   var domConnStates;
-  var domConnstateL1;
-  var domConnstateL2;
   var DUMMYTEXT1 = 'foo';
 
   setup(function() {
@@ -47,6 +47,9 @@ suite('system/LockScreenConnInfoManager >', function() {
 
     realIccManager = navigator.mozIccManager;
     navigator.mozIccManager = MockIccManager;
+
+    realMozSettings = window.navigator.mozSettings;
+    window.navigator.mozSettings = MockNavigatorSettings;
 
     realSettingsListener = window.SettingsListener;
     window.SettingsListener = MockSettingsListener;
@@ -68,9 +71,11 @@ suite('system/LockScreenConnInfoManager >', function() {
     window.SIMSlotManager = realSIMSlotManager;
 
     document.body.removeChild(domConnStates);
-
-    MockSIMSlotManager.mTeardown();
     MockSettingsListener.mTeardown();
+  });
+
+  suiteTeardown(function() {
+    MockSIMSlotManager.mTeardown();
   });
 
   suite('Single sim devices', function() {
@@ -89,6 +94,7 @@ suite('system/LockScreenConnInfoManager >', function() {
 
       MockSIMSlotManager.mInstances =
         [new MockSIMSlot(mockMobileConnection, 0)];
+      iccObj = MockSIMSlotManager.mInstances[0].simCard;
 
       subject = new LockScreenConnInfoManager();
     });
@@ -101,7 +107,6 @@ suite('system/LockScreenConnInfoManager >', function() {
       // add a sim card
       mockMobileConnection.iccId = 'iccid1';
       MockIccManager.mAddMozIccObject('iccid1');
-      iccObj = MockIccManager.getIccById('iccid1');
 
       subject._initialize(domConnStates);
 
@@ -109,6 +114,9 @@ suite('system/LockScreenConnInfoManager >', function() {
       domConnstateIDLine = domConnState.children[0];
       domConnstateL1 = domConnState.children[1];
       domConnstateL2 = domConnState.children[2];
+
+      this.sinon.stub(MockSIMSlotManager, 'isMultiSIM').returns(false);
+      this.sinon.stub(MockSIMSlotManager, 'noSIMCardOnDevice').returns(false);
     });
 
     teardown(function() {
@@ -122,9 +130,6 @@ suite('system/LockScreenConnInfoManager >', function() {
           connected: true,
           type: 'gsm'
         };
-
-        sinon.stub(MockSIMSlotManager, 'isMultiSIM').returns(false);
-        sinon.stub(MockSIMSlotManager, 'noSIMCardOnDevice').returns(false);
 
         subject._cellbroadcastLabel = DUMMYTEXT1;
         subject.updateConnStates();
@@ -153,8 +158,8 @@ suite('system/LockScreenConnInfoManager >', function() {
         subject._cellbroadcastLabel = null;
     });
 
-    /*test('Show no network', function() {
-      MockNavigatorMozMobileConnections[0].voice = {
+    test('Show no network', function() {
+      mockMobileConnection.voice = {
         connected: true,
         state: 'notSearching'
       };
@@ -163,7 +168,7 @@ suite('system/LockScreenConnInfoManager >', function() {
     });
 
     test('Show searching', function() {
-      MockNavigatorMozMobileConnections[0].voice = {
+      mockMobileConnection.voice = {
         connected: false,
         emergencyCallsOnly: false
       };
@@ -172,7 +177,7 @@ suite('system/LockScreenConnInfoManager >', function() {
     });
 
     test('Show roaming', function() {
-      MockNavigatorMozMobileConnections[0].voice = {
+      mockMobileConnection.voice = {
         connected: true,
         emergencyCallsOnly: false,
         roaming: true
@@ -184,7 +189,7 @@ suite('system/LockScreenConnInfoManager >', function() {
 
     suite('Show correct card states when emergency calls only', function() {
       test('unknown', function() {
-        MockNavigatorMozMobileConnections[0].voice = {
+        mockMobileConnection.voice = {
           connected: false,
           emergencyCallsOnly: true
         };
@@ -197,7 +202,7 @@ suite('system/LockScreenConnInfoManager >', function() {
       });
 
       test('other card state', function() {
-        MockNavigatorMozMobileConnections[0].voice = {
+        mockMobileConnection.voice = {
           connected: false,
           emergencyCallsOnly: true
         };
@@ -211,7 +216,7 @@ suite('system/LockScreenConnInfoManager >', function() {
       ['pinRequired', 'pukRequired', 'networkLocked',
        'serviceProviderLocked', 'corporateLocked'].forEach(function(cardState) {
         test(cardState, function() {
-          MockNavigatorMozMobileConnections[0].voice = {
+          mockMobileConnection.voice = {
             connected: false,
             emergencyCallsOnly: true
           };
@@ -223,22 +228,49 @@ suite('system/LockScreenConnInfoManager >', function() {
             'emergencyCallsOnly-' + cardState);
         });
       });
-    });*/
+    });
   });
 
-  /*suite('Multiple sims devices', function() {
+  suite('Multiple sims devices', function() {
     var domConnStateList;
+    var mockMobileConnections = [];
+    var iccObj1;
+    var iccObj2;
 
     suiteSetup(function() {
-      MockNavigatorMozMobileConnections.mAddMobileConnection();
+      mockMobileConnections = [
+        MockMobileconnection(),
+        MockMobileconnection()
+      ];
+
+      MockMobileOperator.mOperator = 'operator';
+      MockMobileOperator.mCarrier = 'carrier';
+      MockMobileOperator.mRegion = 'region';
+
+      MockSIMSlotManager.mInstances =
+        [new MockSIMSlot(mockMobileConnections[0], 0),
+         new MockSIMSlot(mockMobileConnections[1], 1)];
+
+      iccObj1 = MockSIMSlotManager.mInstances[0].simCard;
+      iccObj2 = MockSIMSlotManager.mInstances[1].simCard;
+
+      subject = new LockScreenConnInfoManager();
     });
 
     suiteTeardown(function() {
-      MockNavigatorMozMobileConnections.mRemoveMobileConnection();
+      MockMobileOperator.mTeardown();
     });
 
     setup(function() {
-      subject.initConnectionStates();
+      mockMobileConnections[0].iccId = 'iccid1';
+      mockMobileConnections[0].voice = {};
+      MockIccManager.mAddMozIccObject('iccid1');
+
+      mockMobileConnections[1].iccId = 'iccid2';
+      mockMobileConnections[1].voice = {};
+      MockIccManager.mAddMozIccObject('iccid2');
+
+      subject._initialize(domConnStates);
 
       domConnStateList = [];
       Array.prototype.forEach.call(domConnStates.children,
@@ -248,18 +280,19 @@ suite('system/LockScreenConnInfoManager >', function() {
           domConnState.domConnstateL2 = domConnState.children[2];
           domConnStateList.push(domConnState);
       });
+
+      this.sinon.stub(SIMSlotManager, 'isMultiSIM').returns(true);
+    });
+
+    teardown(function() {
+      mockMobileConnections[0].mTeardown();
+      mockMobileConnections[1].mTeardown();
+      MockIccManager.mTeardown();
     });
 
     suite('No sim card', function() {
       setup(function() {
-        MockNavigatorMozMobileConnections[0].voice = {
-          connected: false,
-          type: 'gsm'
-        };
-      });
-
-      teardown(function() {
-        MockNavigatorMozMobileConnections[0].voice = {};
+        this.sinon.stub(SIMSlotManager, 'noSIMCardOnDevice').returns(true);
       });
 
       test('Should only show one conn state', function() {
@@ -272,7 +305,7 @@ suite('system/LockScreenConnInfoManager >', function() {
       });
 
       test('Should show emergency call text', function() {
-        MockNavigatorMozMobileConnections[0].voice.emergencyCallsOnly = true;
+        mockMobileConnections[0].voice.emergencyCallsOnly = true;
         subject.updateConnStates();
 
         assert.equal(domConnStateList[0].domConnstateL1.textContent,
@@ -286,20 +319,16 @@ suite('system/LockScreenConnInfoManager >', function() {
 
     suite('One sim card inserted', function() {
       suiteSetup(function() {
-        MockNavigatorMozMobileConnections[0].voice = {
+        mockMobileConnections[0].voice = {
           connected: true,
           type: 'gsm'
         };
-        MockNavigatorMozMobileConnections[1].voice = {};
-
-        // add a sim card
-        MockNavigatorMozMobileConnections[0].iccId = 'iccid1';
-        MockIccManager.mAddMozIccObject('iccid1');
+        mockMobileConnections[1].voice = {};
       });
 
-      suiteTeardown(function() {
-        MockNavigatorMozMobileConnections.mTeardown();
-        MockIccManager.mTeardown();
+      setup(function() {
+        navigator.mozIccManager.mRemoveMozIccObject('iccid2');
+        MockSIMSlotManager.mInstances[1].isAbsent = function() { return true; };
       });
 
       test('Should show sim ID', function() {
@@ -319,7 +348,7 @@ suite('system/LockScreenConnInfoManager >', function() {
 
       test('Should show airplane mode on connstate 1 Line 1 when in ' +
         'airplane mode', function() {
-          subject.airplaneMode = true;
+          subject._airplaneMode = true;
           subject.updateConnStates();
 
           assert.isFalse(domConnStateList[0].hidden);
@@ -328,36 +357,21 @@ suite('system/LockScreenConnInfoManager >', function() {
             'airplaneMode');
           assert.equal(domConnStateList[0].domConnstateL2.textContent, '');
 
-          subject.airplaneMode = false;
+          subject._airplaneMode = false;
       });
     });
 
     suite('Two sim cards inserted', function() {
-      suiteSetup(function() {
-        MockNavigatorMozMobileConnections[0].voice = {
+      setup(function() {
+        MockSIMSlotManager.mInstances[0].conn.voice = {
           connected: true,
           type: 'gsm'
         };
-        MockNavigatorMozMobileConnections[1].voice = {
+        MockSIMSlotManager.mInstances[1].conn.voice = {
           connected: true,
           type: 'gsm'
         };
-
-        MockMobileOperator.mOperator = 'operator';
-        MockMobileOperator.mCarrier = 'carrier';
-        MockMobileOperator.mRegion = 'region';
-
-        // add two sim cards
-        MockNavigatorMozMobileConnections[0].iccId = 'iccid1';
-        MockIccManager.mAddMozIccObject('iccid1');
-        MockNavigatorMozMobileConnections[1].iccId = 'iccid2';
-        MockIccManager.mAddMozIccObject('iccid2');
-      });
-
-      suiteTeardown(function() {
-        MockNavigatorMozMobileConnections.mTeardown();
-        MockIccManager.mTeardown();
-        MockMobileOperator.mTeardown();
+        this.sinon.stub(SIMSlotManager, 'noSIMCardOnDevice').returns(false);
       });
 
       test('Should show sim IDs', function() {
@@ -391,5 +405,5 @@ suite('system/LockScreenConnInfoManager >', function() {
           MockMobileOperator.mCarrier + ' ' + MockMobileOperator.mRegion);
       });
     });
-  });*/
+  });
 });
