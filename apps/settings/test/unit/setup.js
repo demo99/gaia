@@ -7,6 +7,7 @@ requireApp('settings/js/vendor/alameda.js', (function() {
     urlArgs: 'bust=' + Date.now(),
     paths: {
       'modules': 'modules',
+      'panels': 'panels',
       'shared': '../shared/js',
       'unit': '../test/unit',
       'shared_mocks': '../shared/test/unit/mocks'
