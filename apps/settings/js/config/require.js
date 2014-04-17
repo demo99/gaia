@@ -17,6 +17,9 @@ require.config({
     },
     'shared/keyboard_helper': {
       exports: 'KeyboardHelper'
+    },
+    'shared/wifi_helper': {
+      exports: 'WifiHelper'
     }
   },
   modules: [
