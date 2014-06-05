@@ -1179,6 +1179,7 @@ html[dir="rtl"] [data-type="list"].pack-value-selector li label:not([for]) input
 .fxa-logo {
   background-image: url('images/fxa_logo.png');
   background-repeat: no-repeat;
+  background-size: 17rem 17.5rem;
   margin: 3rem auto 0;
   width: 17rem;
   height: 17.5rem;
