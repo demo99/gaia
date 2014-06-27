@@ -1,0 +1,59 @@
+{
+  "name": "Spinner",
+  "description": "Web app Spinner",
+  "launch_path": "/index.html",
+  "developer": {
+    "name": "The Gaia Team",
+    "url": "https://github.com/mozilla-b2g/gaia"
+  },
+  "locales": {
+    "ar": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "de": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "el": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "en-US": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "es": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "fr": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "it": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "pt-BR": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "ru": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "tr": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    },
+    "zh-TW": {
+      "name": "Spinner",
+      "description": "Web app Spinner"
+    }
+  },
+  "default_locale": "en-US",
+  "icons": {
+    "128": "/style/icons/Blank.png"
+  }
+}
