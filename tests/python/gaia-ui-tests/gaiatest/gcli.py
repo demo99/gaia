@@ -92,6 +92,12 @@ class GCli(object):
             'unlock': {
                 'function': self.unlock,
                 'help': 'Unlock screen'},
+            'radio' : {
+                'function': self.radio,
+                'args': [
+                    {'name': 'value',
+                     'help': 'true or false'}],
+                'help': 'Manipulate radio'},
             'volume': {
                 'function': self.volume,
                 'args': [
@@ -232,6 +238,9 @@ class GCli(object):
         self.marionette.execute_script(
             "window.wrappedJSObject.dispatchEvent(new Event('wake'));")
 
+    def radio(self, args):
+        self.marionette.execute_script(
+            "window.wrappedJSObject.Radio.enabled = " + args.value + ";")
 
 def cli(args=sys.argv[1:]):
     cli = GCli()
