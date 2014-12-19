@@ -97,6 +97,8 @@ require([
       cs_updateNetworkTypeLimitedItemsVisibility(
         _mobileConnection.voice && _mobileConnection.voice.type);
 
+      cs_initVoiceMailClickEvent();
+
       // Init call setting stuff.
       cs_initVoiceMailSettings();
       cs_initVoicePrivacyMode();
@@ -896,6 +898,12 @@ require([
                                          'voiceMail-number-notSet');
         }
       });
+    }
+
+    function cs_initVoiceMailClickEvent() {
+      document.querySelector('.menuItem-voicemail').onclick = function() {
+        DialogService.show('call-voiceMailSettings');
+      };
     }
 
     /**
