@@ -2,34 +2,34 @@
   <template>
 
     <gaia-header action="back" data-href="#root">
-      <h1 data-l10n-id="callSettings-header"> Call Settings </h1>
+      <h1 data-l10n-id="callSettings-header"></h1>
     </gaia-header>
 
     <div>
       <ul>
         <li>
           <a class="menu-item menuItem-voicemail" href="#">
-            <span data-l10n-id="voiceMail">Voicemail</span>
+            <span data-l10n-id="voiceMail"></span>
             <small id="voiceMail-desc"></small>
           </a>
         </li>
         <li id="menuItem-voicePrivacyMode" hidden>
           <label class="pack-switch checkbox-label">
             <input type="checkbox" data-ignore>
-            <span data-l10n-id="voicePrivacyMode">Voice Privacy Mode</span>
+            <span data-l10n-id="voicePrivacyMode"></span>
           </label>
         </li>
         <li id="menuItem-callWaiting" data-state="off" hidden>
           <label class="pack-switch checkbox-label">
             <input type="checkbox" data-ignore>
-            <span data-l10n-id="callWaiting">Call Waiting</span>
+            <span data-l10n-id="callWaiting"></span>
           </label>
           <label class="alert-label" hidden>
             <span></span>
           </label>
         </li>
         <li id="menuItem-callerId" aria-disabled="true" hidden>
-          <a data-l10n-id="callerId">Caller ID</a>
+          <a data-l10n-id="callerId"></a>
           <span class="button icon icon-dialog">
             <select id="ril-callerId" data-setting="ril.callerId">
               <option value="CLIR_DEFAULT" data-l10n-id="callerId-default">Network default</option>
@@ -40,42 +40,40 @@
         </li>
         <li>
           <a class="menu-item" href="#" data-href="#call-fdnSettings">
-            <span data-l10n-id="fdnSettings">Fixed Dialing Numbers</span>
+            <span data-l10n-id="fdnSettings"></span>
             <small id="fdnSettings-desc"></small>
           </a>
         </li>
       </ul>
 
       <header id="header-callForwarding" hidden>
-        <h2 data-l10n-id="callForwarding"> Call Forwarding </h2>
+        <h2 data-l10n-id="callForwarding"></h2>
       </header>
       <ul id="list-callForwarding" hidden>
         <li id="fdnSettingsBlocked" class="description" hidden>
-          <p data-l10n-id="fdn-enabled-warning">
-            Call forwarding is disabled by FDN.
-          </p>
+          <p data-l10n-id="fdn-enabled-warning"></p>
         </li>
         <li id="li-cfu-desc" aria-disabled="true">
-          <a class="menu-item" id="menuItem-callForwardingUnconditional" href="#" data-href="#call-cf-unconditionalSettings">
-            <span data-l10n-id="callForwardingUnconditional">Always forward</span>
+          <a class="menu-item menuItem-callForwardingUnconditional" href="#">
+            <span data-l10n-id="callForwardingUnconditional"></span>
             <small id="cfu-desc"></small>
           </a>
         </li>
         <li id="li-cfmb-desc" aria-disabled="true">
-          <a class="menu-item" id="menuItem-callForwardingMobileBusy" href="#" data-href="#call-cf-mobileBusySettings">
-            <span data-l10n-id="callForwardingMobileBusy">Forward when busy</span>
+          <a class="menu-item menuItem-callForwardingMobileBusy" href="#">
+            <span data-l10n-id="callForwardingMobileBusy"></span>
             <small id="cfmb-desc"></small>
           </a>
         </li>
         <li id="li-cfnrep-desc" aria-disabled="true">
-          <a class="menu-item" id="menuItem-callForwardingNoReply" href="#" data-href="#call-cf-noReplySettings">
-            <span data-l10n-id="callForwardingNoReply">Forward when unanswered</span>
+          <a class="menu-item menuItem-callForwardingNoReply" href="#">
+            <span data-l10n-id="callForwardingNoReply"></span>
             <small id="cfnrep-desc"></small>
           </a>
         </li>
         <li id="li-cfnrea-desc" aria-disabled="true">
-          <a class="menu-item" id="menuItem-callForwardingNotReachable" href="#" data-href="#call-cf-notReachableSettings">
-            <span data-l10n-id="callForwardingNotReachable">Forward when unreachable</span>
+          <a class="menu-item menuItem-callForwardingNotReachable" href="#">
+            <span data-l10n-id="callForwardingNotReachable"></span>
             <small id="cfnrea-desc"></small>
           </a>
         </li>
@@ -84,20 +82,20 @@
 
     <form role="dialog" data-type="confirm" hidden class="cw-alert">
       <section>
-        <h1 data-l10n-id="confirmCallWaitingTitle">Unable to confirm call waiting preferences</h1>
+        <h1 data-l10n-id="confirmCallWaitingTitle"></h1>
         <p>
-          <strong data-l10n-id="confirmCallWaitingDesc">The device is currently unable to communicate with the carrier. Try setting the preference again.</strong>
+          <strong data-l10n-id="confirmCallWaitingDesc"></strong>
         </p>
         <p class="cw-alert-sub-p">
           <label class="pack-switch cw-alert-checkbox-label">
             <input type="checkbox" data-ignore>
-            <span data-l10n-id="callWaiting">Call Waiting</span>
+            <span data-l10n-id="callWaiting"></span>
           </label>
         </p>
       </section>
       <menu>
-        <button class="cw-alert-cancel" data-l10n-id="cancel">Cancel</button>
-        <button class="cw-alert-set recommend" data-l10n-id="set">Set</button>
+        <button class="cw-alert-cancel" data-l10n-id="cancel"></button>
+        <button class="cw-alert-set recommend" data-l10n-id="set"></button>
       </menu>
     </form>
 
