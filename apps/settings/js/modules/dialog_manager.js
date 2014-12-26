@@ -228,7 +228,7 @@ define(function(require) {
         if (foundPanel.onSubmit && options._type === 'submit') {
           promise = foundPanel.onSubmit();
         // custom dialog - onCancel
-        } else if (foundPanel.onCancel && options._type === 'cacnel') {
+        } else if (foundPanel.onCancel && options._type === 'cancel') {
           promise = foundPanel.onCancel();
         // if no onSubmit & onCancel, pass directly
         } else {

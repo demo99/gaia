@@ -126,7 +126,6 @@
     <link rel="import" href="/elements/call_cf_mobile_busy_settings.html">
     <link rel="import" href="/elements/call_cf_unconditional_settings.html">
     <link rel="import" href="/elements/call_voice_mail_settings.html">
-    <link rel="import" href="/elements/call_pin2_dialog.html">
     <link rel="import" href="/elements/call_fdn_list_add.html">
     <link rel="import" href="/elements/call_fdn_list.html">
     <link rel="import" href="/elements/call_fdn_settings.html">
@@ -160,7 +159,8 @@
     <link rel="import" href="/elements/themes.html">
     <link rel="import" href="/elements/screen_lock_passcode.html">
     <link rel="import" href="/elements/screen_lock.html">
-    <link rel="import" href="/elements/simpin_dialog.html">
+    <link rel="import" href="/elements/simpin1_dialog.html">
+    <link rel="import" href="/elements/simpin2_dialog.html">
     <link rel="import" href="/elements/simpin.html">
     <link rel="import" href="/elements/app_permissions_details.html">
     <link rel="import" href="/elements/app_permissions.html">
@@ -327,7 +327,9 @@
     <!-- Security :: Screen Lock -->
     <section is="screenLock" role="region" id="screenLock" data-passcode-enabled="false" data-lockscreen-enabled="false"></section>
     <!-- Security :: SIM Security :: SIM PIN Input -->
-    <section is="simpin-dialog" role="region" id="simpin-dialog"></section>
+    <section is="simpin1-dialog" role="region" id="simpin1-dialog" class="dialog"></section>
+    <!-- Security :: SIM Security :: SIM PIN Input -->
+    <section is="simpin2-dialog" role="region" id="simpin2-dialog" class="dialog"></section>
     <!-- Security :: SIM Security -->
     <section is="simpin" role="region" id="simpin" data-require-sub-panels="true"></section>
     <!-- Security :: Application Permissions :: Details -->

@@ -4,7 +4,7 @@ define(function(require) {
   var _ = window.navigator.mozL10n.get;
   var AirplaneModeHelper = require('shared/airplane_mode_helper');
   var SIMSlotManager = require('shared/simslot_manager');
-  var SimPinDialog = require('simcard_dialog');
+  var DialogService = require('modules/dialog_service');
   var Template = require('shared/template');
   var Toaster = require('shared/toaster');
 
@@ -19,7 +19,6 @@ define(function(require) {
         this.iccManager = window.navigator.mozIccManager;
         this.isAirplaneMode = (AirplaneModeHelper.getStatus() === 'enabled');
         this.simPinTemplate = new Template(this._elements.simPinTmpl);
-        this.simPinDialog = new SimPinDialog(this._elements.dialog);
 
         this._elements.simPinContainer.addEventListener('click', this);
         this.addIccDetectedEvent();
@@ -116,28 +115,29 @@ define(function(require) {
           break;
 
         case 'changeSimPin':
-          // TODO:
-          // remember to update SimPinDialog for DSDS structure
-          this.simPinDialog.show('change_pin', {
-            cardIndex: cardIndex,
-            // show toast after user successfully change pin
-            onsuccess: function toastOnSuccess() {
-              var toast;
-              if (SIMSlotManager.isMultiSIM()) {
-                toast = {
-                  messageL10nId: 'simPinChangedSuccessfullyWithIndex',
-                  messageL10nArgs: {'index': +(cardIndex) + 1},
-                  latency: 3000,
-                  useTransition: true
-                };
-              } else {
-                toast = {
-                  messageL10nId: 'simPinChangedSuccessfully',
-                  latency: 3000,
-                  useTransition: true
-                };
+          DialogService.show('simpin1-dialog', {
+            method: 'change_pin',
+            pinOptions: {
+              cardIndex: cardIndex,
+              // show toast after user successfully change pin
+              onsuccess: function toastOnSuccess() {
+                var toast;
+                if (SIMSlotManager.isMultiSIM()) {
+                  toast = {
+                    messageL10nId: 'simPinChangedSuccessfullyWithIndex',
+                    messageL10nArgs: {'index': +(cardIndex) + 1},
+                    latency: 3000,
+                    useTransition: true
+                  };
+                } else {
+                  toast = {
+                    messageL10nId: 'simPinChangedSuccessfully',
+                    latency: 3000,
+                    useTransition: true
+                  };
+                }
+                Toaster.showToast(toast);
               }
-              Toaster.showToast(toast);
             }
           });
           break;
@@ -150,29 +150,35 @@ define(function(require) {
 
       switch (icc.cardState) {
         case 'pukRequired':
-          this.simPinDialog.show('unlock_puk', {
-            cardIndex: cardIndex,
-            onsuccess: () => {
-              // successful unlock puk will be in simcard lock enabled state
-              checkbox.checked = true;
-              this.updateSimPinUI(cardIndex);
-            },
-            oncancel: () => {
-              checkbox.checked = !enabled;
-              this.updateSimPinUI(cardIndex);
+          DialogService.show('simpin1-dialog', {
+            method: 'unlock_puk',
+            pinOptions: {
+              cardIndex: cardIndex,
+              onsuccess: () => {
+                // successful unlock puk will be in simcard lock enabled state
+                checkbox.checked = true;
+                this.updateSimPinUI(cardIndex);
+              },
+              oncancel: () => {
+                checkbox.checked = !enabled;
+                this.updateSimPinUI(cardIndex);
+              }
             }
           });
           break;
         default:
           var action = enabled ? 'enable_lock' : 'disable_lock';
-          this.simPinDialog.show(action, {
-            cardIndex: cardIndex,
-            onsuccess: () => {
-              this.updateSimPinUI(cardIndex);
-            },
-            oncancel: () => {
-              checkbox.checked = !enabled;
-              this.updateSimPinUI(cardIndex);
+          DialogService.show('simpin1-dialog', {
+            method: action,
+            pinOptions: {
+              cardIndex: cardIndex,
+              onsuccess: () => {
+                this.updateSimPinUI(cardIndex);
+              },
+              oncancel: () => {
+                checkbox.checked = !enabled;
+                this.updateSimPinUI(cardIndex);
+              }
             }
           });
           break;

@@ -2,9 +2,6 @@ define('simcard_fdn', ['modules/dialog_service'], function(DialogService) {
   'use strict';
 
   var SimFdnLock = {
-    dialog: document.getElementById('call-pin2-dialog'),
-    pinDialog: null,
-
     // enable|disable|unlock FDN
     simFdnDesc: document.querySelector('#fdn-enabled small'),
     simFdnCheckBox: document.querySelector('#fdn-enabled input'),
@@ -52,7 +49,6 @@ define('simcard_fdn', ['modules/dialog_service'], function(DialogService) {
       var callback = this.updateFdnStatus.bind(this);
       iccObj.addEventListener('cardstatechange', callback);
 
-      this.pinDialog = new SimPinDialog(this.dialog);
       var self = this;
 
       // enable|disable|unlock FDN
@@ -63,14 +59,19 @@ define('simcard_fdn', ['modules/dialog_service'], function(DialogService) {
         if (iccObj.cardState === 'puk2Required') {
           action = 'unlock_puk2';
         }
-        self.pinDialog.show(action, {
-          onsuccess: callback,
-          oncancel: callback
+        DialogService.show('simpin2-dialog', {
+          method: action,
+          pinOptions: {
+            onsuccess: callback,
+            oncancel: callback
+          }
         });
       };
 
       this.resetPin2Button.onclick = function spl_resetPin2() {
-        self.pinDialog.show('change_pin2');
+        DialogService.show('simpin2-dialog', {
+          method: 'change_pin2'
+        });
       };
 
       this.updateFdnStatus();
@@ -200,9 +201,12 @@ define('simcard_fdn', ['modules/dialog_service'], function(DialogService) {
         number: number
       });
 
-      this.pinDialog.show('get_pin2', {
-        exitPanel: '#call-fdnList',
-        fdnContact: contact
+      DialogService.show('simpin2-dialog', {
+        method: 'get_pin2',
+        pinOptions: {
+          exitPanel: '#call-fdnList',
+          fdnContact: contact
+        }
       });
     }
   };
