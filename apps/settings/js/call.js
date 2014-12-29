@@ -124,6 +124,7 @@ require([
                 e.detail.previous === '#call-voiceMailSettings') {
               return;
             }
+            cs_toggleFdnItem();
             cs_updateNetworkTypeLimitedItemsVisibility(
               _mobileConnection.voice && _mobileConnection.voice.type);
             cs_refreshCallSettingItems();
@@ -141,6 +142,18 @@ require([
       });
 
       cs_refreshCallSettingItems();
+    }
+
+    function cs_toggleFdnItem() {
+      var iccObj = getIccByIndex();
+      var fdnMenuItem = document.getElementById('menuItem-callFdn');
+      iccObj.getServiceState('fdn').then(function(hasFdn) {
+        if (hasFdn) {
+          fdnMenuItem.hidden = false;
+        } else {
+          fdnMenuItem.hidden = true;
+        }
+      });
     }
 
     /**
