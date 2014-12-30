@@ -1,0 +1,59 @@
+{
+  "name": "Test Graphics",
+  "description": "Web app Test Graphics",
+  "launch_path": "/index.html",
+  "developer": {
+    "name": "The Gaia Team",
+    "url": "https://github.com/mozilla-b2g/gaia"
+  },
+  "locales": {
+    "ar": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "de": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "el": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "en-US": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "es": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "fr": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "it": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "pt-BR": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "ru": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "tr": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    },
+    "zh-TW": {
+      "name": "Test Graphics",
+      "description": "Web app Test Graphics"
+    }
+  },
+  "default_locale": "en-US",
+  "icons": {
+    "128": "/style/icons/Blank.png"
+  }
+}
